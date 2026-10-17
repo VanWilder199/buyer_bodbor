@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+coverage/
+.env
+.env.*
+!.env.example
+.idea/
+.DS_Store.nessy/

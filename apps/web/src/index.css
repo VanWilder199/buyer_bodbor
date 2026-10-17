@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "@podbor/ui/theme.css";
+
+/* Компоненты из packages/ui лежат вне приложения — указываем Tailwind, где искать классы */
+@source "../../../packages/ui/src";
+
+html {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
