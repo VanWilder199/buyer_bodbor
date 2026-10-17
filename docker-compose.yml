@@ -1,0 +1,19 @@
+# WEB-11: фронтенд покупателя рядом с API.
+# Сервис `api` (бэкенд :8080) определяется в docker-compose репозитория бэкенда
+# и должен быть в этой же сети `podbor`, чтобы nginx находил `api:8080`.
+#
+#   docker compose up --build -d          # только web
+#   (в репо бэкенда: docker compose up -d # поднимает api в сеть podbor)
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - podbor
+
+networks:
+  podbor:
+    name: podbor

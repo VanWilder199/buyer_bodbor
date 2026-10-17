@@ -27,6 +27,17 @@ npm run build            # сборка всех workspace
 npm test -w @podbor/web  # тесты покупателя (vitest)
 ```
 
+## Прод (WEB-11)
+
+Multi-stage `Dockerfile` (Node 22 → nginx) + `nginx.conf` + `docker-compose.yml`.
+API ожидается в compose-сети `podbor` как сервис `api:8080` (из репо бэкенда).
+
+```bash
+docker compose up --build -d   # web на :3000 → :80
+```
+
+Перед выкатом: заменить `<s3-host>` на реальный хост S3 в `nginx.conf` (CSP).
+
 ## Режим моков
 
 `npm run dev:web:mocks` — приложение работает без бэкенда на MSW (`apps/web/src/mocks/handlers.ts`).

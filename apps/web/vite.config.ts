@@ -1,10 +1,23 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+
+/** WEB-11: убрать MSW-воркер из прод-сборки (нужен только в dev с моками). */
+function removeMockWorker(): Plugin {
+  return {
+    name: 'remove-mock-worker',
+    apply: 'build',
+    closeBundle() {
+      const file = path.resolve(__dirname, 'dist/mockServiceWorker.js');
+      if (fs.existsSync(file)) fs.rmSync(file, { force: true });
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), removeMockWorker()],
   server: {
     port: 5173,
     proxy: {

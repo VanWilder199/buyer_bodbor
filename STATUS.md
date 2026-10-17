@@ -5,7 +5,7 @@
 ## Итог
 
 Перенесён фронтенд покупателя из `backend-podbor/frontend` в отдельный репозиторий.
-**Сделаны WEB-1…WEB-10, WEB-13, WEB-4 и WEB-14** на моках (MSW). Типы и сборка чистые, **28 тестов зелёные**
+**Сделаны WEB-1…WEB-11, WEB-13, WEB-4 и WEB-14** на моках (MSW). Типы и сборка чистые, **28 тестов зелёные**
 (`npm test -w @podbor/web`), `npm run build` проходит.
 
 ## Что сделано
@@ -24,12 +24,12 @@
 | WEB-10 | Открытие купленного отчёта из «Моих покупок»: `/purchases/:id/report` (требует входа) переиспользует экран отчёта (шапка из обогащённого `PurchaseDto`), `GET /purchases/{id}/view` (G-6 на моках), `paid` → «Открыть отчёт», `failed` → «Купить снова», `pending` → «Платёж обрабатывается», `PURCHASE_NOT_FOUND`/`REPORT_NOT_FOUND`/`REPORT_REMOVED` → свои тексты. Общие модули `ReportScreen`/`ReportLoading`/`useMediaRefetch` |
 | WEB-9 | Полная страница машины `/cars/:carId`: карточка (марка/модель/год/VIN/ссылка av.by), список отчётов (подборщик, дата, цена, тизер `stopFactorsCount`, «Купить»/«Открыть`), 0 отчётов → «Хочу отчёт» с `waitingCount`; отдельные skeleton/error для списка; прямой заход по URL работает (G-4/G-5 на моках). `waitingCount` добавлен в `CarDto` (G-5) |
 | WEB-13 | Юридические страницы (`/legal/offer`, `/legal/privacy`, `/legal/refund`, `/contacts`) — статичный markdown в `src/legal/content.ts` (владелец наполнит тексты), минимальный markdown-рендерер; подвал в `AppShell` со ссылками; чекбокс согласия на шаге 1 входа (без него «Получить код» неактивна); на checkout уже есть строка «Нажимая „Оплатить“, вы принимаете условия оферты» |
+| WEB-11 | Прод-раздача: multi-stage `Dockerfile` (Node 22 → nginx), `nginx.conf` (CSP с `<s3-host>`, `Referrer-Policy`, SPA-фолбэк, кеш `/assets/` immutable + `index.html` no-store, `log_format` без query-string для `/reports/view` — S-10), `docker-compose.yml` (web в сети `podbor`, API — из репо бэкенда), `.dockerignore`; `mockServiceWorker.js` убирается из прод-сборки (`removeMockWorker` в `vite.config.ts`); `VITE_API_URL` пустой (same-origin `/api`) |
 
 ## Что отложено (по решению пользователя «Ядро сейчас»)
 
-- **WEB-11** — прод-сборка/nginx (CSP, кеширование, SPA-фолбэк, логи без `token=`, Dockerfile).
 - **WEB-12** — генерация типов из springdoc (нужен G-8).
-- **WEB-15, WEB-16** — аналитика/мониторинг (Метрика, Sentry), OG/PWA.
+- **WEB-15, WEB-16** — аналитика/мониторинг (Метрика, Sentry), OG/PWA — в плане «не для MVP».
 
 ## Замечания по WEB-4
 
@@ -47,6 +47,7 @@
 
 ## Вопросы
 
-1. Сделаны WEB-1…WEB-10, WEB-13, WEB-4 и WEB-14. Дальше: WEB-11 (прод-nginx) или WEB-15/16 (аналитика/OG)?
-2. Юр.тексты в `src/legal/content.ts` — плейсхолдеры: наполнить финальными (оферта, политика, возврат, реквизиты).
-3. Проверить глазами `npm run dev:web:mocks`: вход (код `042817`, нужна галочка согласия) → поиск VIN → карточка (`/cars/c-1`) → покупка → возврат → «Мои покупки» → «Открыть отчёт»; отчёт по токену — `/reports/view?token=r-1`; юр.страницы — `/legal/privacy`.
+1. Сделаны WEB-1…WEB-11, WEB-13, WEB-4 и WEB-14. Осталось: WEB-12 (нужен G-8), WEB-15/16 (в плане «не для MVP»).
+2. Юр.тексты в `src/legal/content.ts` — плейсхолдеры: наполнить финальными.
+3. **`nginx.conf`**: заменить `<s3-host>` на реальный хост S3 в CSP.
+4. Проверить глазами `npm run dev:web:mocks`: вход (код `042817`, галочка согласия) → поиск VIN → карточка (`/cars/c-1`) → покупка → возврат → «Мои покупки» → «Открыть отчёт»; отчёт по токену — `/reports/view?token=r-1`; юр.страницы — `/legal/privacy`.
