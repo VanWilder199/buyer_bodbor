@@ -15,6 +15,7 @@ import { PurchasesPage } from './pages/PurchasesPage';
 import { SampleReportPage } from './pages/SampleReportPage';
 import { ReportViewPage } from './pages/ReportViewPage';
 import { PurchaseReportPage } from './pages/PurchaseReportPage';
+import { LegalPage } from './pages/LegalPage';
 import { DevReportPage } from './pages/DevReportPage';
 
 /**
@@ -38,6 +39,11 @@ export const appRoutes: RouteObject[] = [
       { path: '/purchase/cancel', element: <PurchaseResultPage outcome="cancel" />, loader: requireAuthLoader },
       { path: '/purchases', element: <PurchasesPage />, loader: requireAuthLoader },
       { path: '/sample', element: <SampleReportPage /> },
+      // Юридические страницы (WEB-13)
+      { path: '/legal/offer', element: <LegalPage doc="offer" /> },
+      { path: '/legal/privacy', element: <LegalPage doc="privacy" /> },
+      { path: '/legal/refund', element: <LegalPage doc="refund" /> },
+      { path: '/contacts', element: <LegalPage doc="contacts" /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

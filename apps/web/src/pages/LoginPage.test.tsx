@@ -9,10 +9,19 @@ function renderLogin() {
 }
 
 describe('LoginPage (WEB-3)', () => {
+  it('кнопка «Получить код» неактивна без согласия (WEB-13)', async () => {
+    renderLogin();
+    const button = (await screen.findByRole('button', { name: 'Получить код' })) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    await userEvent.setup().click(screen.getByLabelText('Согласие на обработку персональных данных'));
+    expect((screen.getByRole('button', { name: 'Получить код' }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
   it('invalid input → error, no navigation', async () => {
     const user = userEvent.setup();
     renderLogin();
     await user.type(await screen.findByLabelText('Телефон или email'), 'не телефон');
+    await user.click(screen.getByLabelText('Согласие на обработку персональных данных'));
     await user.click(screen.getByRole('button', { name: 'Получить код' }));
     expect(await screen.findByText(/Не распознали телефон или email/)).toBeInTheDocument();
   });
@@ -21,6 +30,7 @@ describe('LoginPage (WEB-3)', () => {
     const user = userEvent.setup();
     renderLogin();
     await user.type(await screen.findByLabelText('Телефон или email'), '+375291234567');
+    await user.click(screen.getByLabelText('Согласие на обработку персональных данных'));
     await user.click(screen.getByRole('button', { name: 'Получить код' }));
 
     expect(await screen.findByText('Введите код')).toBeInTheDocument();
@@ -33,6 +43,7 @@ describe('LoginPage (WEB-3)', () => {
     const user = userEvent.setup();
     renderLogin();
     await user.type(await screen.findByLabelText('Телефон или email'), '+375291234567');
+    await user.click(screen.getByLabelText('Согласие на обработку персональных данных'));
     await user.click(screen.getByRole('button', { name: 'Получить код' }));
     await screen.findByText('Введите код');
 

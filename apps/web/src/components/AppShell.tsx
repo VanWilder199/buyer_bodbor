@@ -45,6 +45,21 @@ export function AppShell() {
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
         <Outlet />
       </main>
+      <Footer />
     </div>
+  );
+}
+
+/** Подвал с юридическими ссылками (WEB-13) — оферта, политика, возврат, контакты. */
+function Footer() {
+  return (
+    <footer className="border-t border-border py-6">
+      <div className="mx-auto flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 text-sm text-muted-foreground">
+        <Link to="/legal/offer">Оферта</Link>
+        <Link to="/legal/privacy">Политика обработки данных</Link>
+        <Link to="/legal/refund">Возврат</Link>
+        <Link to="/contacts">Контакты</Link>
+      </div>
+    </footer>
   );
 }

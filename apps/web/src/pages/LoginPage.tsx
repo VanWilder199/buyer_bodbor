@@ -3,7 +3,7 @@ import { FieldMessage, Input } from '@podbor/ui/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@podbor/ui/components/ui/input-otp';
 import { ApiError } from '@podbor/api';
 import { useEffect, useState, type FormEvent } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { apiErrorMessage } from '../api/errorMessages';
 import { parseLoginInput, sendOtp, verifyOtp, type LoginTarget } from '../auth/login';
 
@@ -25,6 +25,7 @@ export function LoginPage() {
   const [busy, setBusy] = useState(false);
   const [resendIn, setResendIn] = useState(0);
   const [resendCount, setResendCount] = useState(0);
+  const [consent, setConsent] = useState(false);
 
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -130,7 +131,22 @@ export function LoginPage() {
             autoFocus
           />
           <FieldMessage error>{error}</FieldMessage>
-          <Button block size="lg" type="submit" loading={busy}>
+          <label className="flex items-start gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 size-4 accent-brand"
+              aria-label="Согласие на обработку персональных данных"
+            />
+            <span>
+              Я соглашаюсь на обработку персональных данных согласно{' '}
+              <Link to="/legal/privacy" className="font-medium text-primary">
+                политике конфиденциальности
+              </Link>
+            </span>
+          </label>
+          <Button block size="lg" type="submit" loading={busy} disabled={!consent}>
             {busy ? '' : 'Получить код'}
           </Button>
         </form>
