@@ -5,10 +5,12 @@ import { ApiError } from '@podbor/api';
 import type { CarDto, InitiatePurchaseResponse, PurchaseDtoEnriched, ReportPreviewDto } from '@podbor/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { apiErrorMessage } from '../api/errorMessages';
 import { useSession } from '../auth/useSession';
+import { saveReportCar } from '../lib/reportSession';
 
 interface CheckoutState {
   car?: CarDto;
@@ -40,6 +42,11 @@ export function CheckoutPage() {
     queryFn: () => api.get<PurchaseDtoEnriched[]>('/purchases'),
     enabled: purchaseMutation.isError && purchaseMutation.error instanceof ApiError && purchaseMutation.error.errorCode === 'PURCHASE_ALREADY_EXISTS',
   });
+
+  // Запоминаем машину в sessionStorage — экран отчёта (WEB-4) покажет её в шапке до G-10.
+  useEffect(() => {
+    if (car) saveReportCar({ carTitle: `${car.make} ${car.model}, ${car.year}`, carSubtitle: car.vin });
+  }, [car]);
 
   // Данные отчёта пришли из карточки машины (Link state). Прямой заход без state — просим выбрать заново.
   if (!car || !report) {

@@ -13,6 +13,7 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { PurchaseResultPage } from './pages/PurchaseResultPage';
 import { PurchasesPage } from './pages/PurchasesPage';
 import { SampleReportPage } from './pages/SampleReportPage';
+import { ReportViewPage } from './pages/ReportViewPage';
 import { DevReportPage } from './pages/DevReportPage';
 
 /**
@@ -39,6 +40,8 @@ export const appRoutes: RouteObject[] = [
       { path: '*', element: <NotFoundPage /> },
     ],
   },
+  // Экран отчёта — публичный, вне AppShell (без шапки входа/выхода).
+  { path: '/reports/view', element: <ReportViewPage /> },
   // Витрина отчёта — только в dev-сборке (выкидывается в проде).
   ...(import.meta.env.DEV
     ? [{ path: '/dev/report', element: <DevReportPage /> } as RouteObject]

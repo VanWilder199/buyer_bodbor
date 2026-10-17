@@ -7,4 +7,5 @@ coverage/
 .env.*
 !.env.example
 .idea/
-.DS_Store.nessy/
+.DS_Store
+.nessy/
