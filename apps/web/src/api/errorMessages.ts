@@ -19,10 +19,13 @@ const BY_ERROR_CODE: Record<string, string> = {
   CAR_LISTING_NOT_FOUND: 'Не удалось найти объявление на av.by',
   PARSER_ERROR: 'Не удалось разобрать ссылку av.by',
 
-  // покупка (WEB-6, WEB-7)
+  // покупка (WEB-6, WEB-7, WEB-10)
   REPORT_NOT_PUBLISHED: 'Этот отчёт больше недоступен для покупки',
   PURCHASE_ALREADY_EXISTS: 'Вы уже приобрели этот отчёт',
   BEPAID_REQUEST_FAILED: 'Платёжная система недоступна. Попробуйте позже',
+  PURCHASE_NOT_FOUND: 'Покупка не найдена',
+  PURCHASE_NOT_PAID: 'Отчёт ещё не оплачен',
+  REPORT_REMOVED: 'Отчёт удалён модератором',
 
   // отчёт (WEB-4)
   ACCESS_TOKEN_INVALID: 'Ссылка недействительна или истекла (ссылки живут 30 дней)',

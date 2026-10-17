@@ -153,4 +153,16 @@ export const handlers = [
     }
     return HttpResponse.json(s.purchases);
   }),
+
+  http.get(`${base}/purchases/:purchaseId/view`, ({ params }) => {
+    const s = getMockState();
+    const purchase = s.purchases.find((p) => p.id === params.purchaseId);
+    if (!purchase) return HttpResponse.json({ status: 404, errorCode: 'PURCHASE_NOT_FOUND' }, { status: 404 });
+    if (purchase.status !== 'paid') {
+      return HttpResponse.json({ status: 400, errorCode: 'PURCHASE_NOT_PAID' }, { status: 400 });
+    }
+    const view = s.reportViews[purchase.reportId];
+    if (!view) return HttpResponse.json({ status: 404, errorCode: 'REPORT_NOT_FOUND' }, { status: 404 });
+    return HttpResponse.json(view);
+  }),
 ];

@@ -14,6 +14,7 @@ import { PurchaseResultPage } from './pages/PurchaseResultPage';
 import { PurchasesPage } from './pages/PurchasesPage';
 import { SampleReportPage } from './pages/SampleReportPage';
 import { ReportViewPage } from './pages/ReportViewPage';
+import { PurchaseReportPage } from './pages/PurchaseReportPage';
 import { DevReportPage } from './pages/DevReportPage';
 
 /**
@@ -42,6 +43,8 @@ export const appRoutes: RouteObject[] = [
   },
   // Экран отчёта — публичный, вне AppShell (без шапки входа/выхода).
   { path: '/reports/view', element: <ReportViewPage /> },
+  // Открытие купленного отчёта из «Моих покупок» (WEB-10) — требует входа.
+  { path: '/purchases/:purchaseId/report', element: <PurchaseReportPage />, loader: requireAuthLoader },
   // Витрина отчёта — только в dev-сборке (выкидывается в проде).
   ...(import.meta.env.DEV
     ? [{ path: '/dev/report', element: <DevReportPage /> } as RouteObject]

@@ -79,7 +79,32 @@ function PurchaseRow({ purchase }: { purchase: PurchaseDtoEnriched }) {
           {formatDate(purchase.createdAt)} · {STATUS_LABEL[purchase.status]}
         </p>
       </div>
-      <span className="shrink-0 font-semibold">{formatByn(purchase.amountByn)}</span>
+      <div className="flex shrink-0 flex-col items-end gap-1">
+        <span className="font-semibold">{formatByn(purchase.amountByn)}</span>
+        <PurchaseAction purchase={purchase} />
+      </div>
     </div>
+  );
+}
+
+function PurchaseAction({ purchase }: { purchase: PurchaseDtoEnriched }) {
+  if (purchase.status === 'paid') {
+    return (
+      <Link to={`/purchases/${purchase.id}/report`}>
+        <Button size="sm">Открыть отчёт</Button>
+      </Link>
+    );
+  }
+  if (purchase.status === 'failed') {
+    return (
+      <Link to={`/checkout/${purchase.reportId}`}>
+        <Button size="sm" variant="secondary">
+          Купить снова
+        </Button>
+      </Link>
+    );
+  }
+  return (
+    <p className="text-xs text-muted-foreground">Платёж обрабатывается</p>
   );
 }
