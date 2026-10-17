@@ -8,6 +8,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { ReportLoading, ReportScreen } from '../components/ReportScreen';
 import { useMediaRefetch } from '../hooks/useMediaRefetch';
+import { useNoIndex } from '../hooks/useNoIndex';
 import { readReportCar, readReportToken, saveReportToken, type ReportCar } from '../lib/reportSession';
 
 /** `staleTime` отчёта — 50 минут (G-18 ниже; без него отчёт весит 25–45 МБ). */
@@ -19,6 +20,7 @@ const REPORT_STALE_MS = 50 * 60_000;
  */
 export function ReportViewPage() {
   const [searchParams] = useSearchParams();
+  useNoIndex();
 
   // Токен: сначала из URL, иначе — из sessionStorage (переживает перезагрузку).
   const urlToken = searchParams.get('token');

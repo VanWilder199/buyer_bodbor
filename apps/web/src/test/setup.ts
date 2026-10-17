@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll } from 'vitest';
 import { setUnauthorizedHandler } from '../api/client';
+import { setConsent } from '../lib/consent';
 import { resetMockState } from '../mocks/state';
 import { server } from '../mocks/server';
 
@@ -14,6 +15,7 @@ afterEach(() => {
   resetMockState();
   localStorage.clear();
   sessionStorage.clear();
+  setConsent(null);
   document.title = '';
   setUnauthorizedHandler(undefined);
 });

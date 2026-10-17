@@ -10,6 +10,7 @@ import { api } from '../api/client';
 import { apiErrorMessage } from '../api/errorMessages';
 import { ReportLoading, ReportScreen } from '../components/ReportScreen';
 import { useMediaRefetch } from '../hooks/useMediaRefetch';
+import { useNoIndex } from '../hooks/useNoIndex';
 
 /** `staleTime` отчёта — 50 минут (G-18). */
 const REPORT_STALE_MS = 50 * 60_000;
@@ -20,6 +21,7 @@ const REPORT_STALE_MS = 50 * 60_000;
  */
 export function PurchaseReportPage() {
   const { purchaseId } = useParams<{ purchaseId: string }>();
+  useNoIndex();
 
   const purchaseQuery = useQuery({
     queryKey: ['purchases'],

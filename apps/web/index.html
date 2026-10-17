@@ -5,7 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f6f7f8" />
     <meta name="referrer" content="no-referrer" />
+    <meta name="description" content="Профессиональный осмотр автомобиля и подробный отчёт по каждой машине. Проверка перед покупкой." />
     <title>АвтоОтчёт — проверка автомобиля перед покупкой</title>
+
+    <!-- PWA (WEB-16): манифест + иконки, сайт можно добавить на домашний экран. Service worker не нужен. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <!-- OG-метатеги (WEB-16): ссылку кидают в Telegram/Viber. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="АвтоОтчёт" />
+    <meta property="og:title" content="АвтоОтчёт — проверка автомобиля перед покупкой" />
+    <meta property="og:description" content="Профессиональный осмотр автомобиля и подробный отчёт по каждой машине." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

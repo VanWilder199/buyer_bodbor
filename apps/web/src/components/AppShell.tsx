@@ -2,6 +2,8 @@ import { Button } from '@podbor/ui/components/ui/button';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { clearSession } from '../auth/session';
 import { useSession } from '../auth/useSession';
+import { AnalyticsTracker } from './AnalyticsTracker';
+import { ConsentBanner } from './ConsentBanner';
 import { OfflineBanner } from './OfflineBanner';
 
 /** Шапка + офлайн-баннер + контент. Страница отчёта рендерится без этого хрома. */
@@ -16,6 +18,7 @@ export function AppShell() {
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <AnalyticsTracker />
       <OfflineBanner />
       <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-2xl items-center justify-between gap-3 px-4">
@@ -46,6 +49,7 @@ export function AppShell() {
         <Outlet />
       </main>
       <Footer />
+      <ConsentBanner />
     </div>
   );
 }

@@ -7,11 +7,15 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { setUnauthorizedHandler } from './api/client';
 import { clearSession } from './auth/session';
+import { initSentry } from './lib/sentry';
 import { createQueryClient } from './queryClient';
 import { createAppRouter } from './routes';
 import './index.css';
 
 const queryClient = createQueryClient();
+
+// WEB-15: Sentry — только если задан VITE_SENTRY_DSN (динамический импорт).
+void initSentry();
 
 // INVALID_REFRESH_TOKEN / 400 от /auth/refresh → разлогин и редирект на /login?next=…
 setUnauthorizedHandler(() => {

@@ -38,6 +38,12 @@ docker compose up --build -d   # web на :3000 → :80
 
 Перед выкатом: заменить `<s3-host>` на реальный хост S3 в `nginx.conf` (CSP).
 
+## Аналитика и PWA (WEB-15/16)
+
+- **Метрика** — включится при `VITE_YM_COUNTER=<id>` и после согласия в cookie-баннере. Цели — второй этап.
+- **Sentry** — включится при `VITE_SENTRY_DSN=<dsn>` (release = git sha; query-string вырезается из URL перед отправкой).
+- **PWA** — `manifest.webmanifest` + иконки, сайт можно добавить на домашний экран; страницы отчёта — `noindex`.
+
 ## Режим моков
 
 `npm run dev:web:mocks` — приложение работает без бэкенда на MSW (`apps/web/src/mocks/handlers.ts`).
