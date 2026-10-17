@@ -34,7 +34,7 @@ export interface VerifyOtpRequest {
   otp: string;
 }
 
-/** `CarDto.java`. */
+/** `CarDto.java`. `waitingCount` — после G-5 (сколько человек ждут отчёт по этой машине). */
 export interface CarDto {
   id: string;
   vin: string;
@@ -43,6 +43,7 @@ export interface CarDto {
   model: string;
   year: number;
   listingStatus: ListingStatus;
+  waitingCount?: number;
 }
 
 /** `CreateReportRequestDto.java` — тело «Хочу отчёт». */

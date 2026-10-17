@@ -10,6 +10,7 @@ export const mockCar: CarDto = {
   model: 'Passat',
   year: 2017,
   listingStatus: 'active',
+  waitingCount: 7,
 };
 
 export const mockReportPreview: ReportPreviewDto = {

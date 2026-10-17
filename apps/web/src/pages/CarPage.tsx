@@ -2,7 +2,7 @@ import { Button } from '@podbor/ui/components/ui/button';
 import { Card } from '@podbor/ui/components/card';
 import { Skeleton } from '@podbor/ui/components/ui/skeleton';
 import { formatByn, formatDate } from '@podbor/ui/lib/format';
-import { Car as CarIcon, ExternalLink } from 'lucide-react';
+import { Car as CarIcon, ExternalLink, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import type { CarDto, ReportPreviewDto } from '@podbor/api';
 import { Link, useParams } from 'react-router-dom';
@@ -10,8 +10,9 @@ import { apiErrorMessage } from '../api/errorMessages';
 import { api } from '../api/client';
 
 /**
- * Страница машины (WEB-9, минимальная версия): карточка машины + список опубликованных
- * отчётов. Полные состояния (skeleton/empty/error, waitingCount, direct-URL) — дальше.
+ * WEB-9: страница машины со списком отчётов (центр сценария А).
+ * Карточка машины + опубликованные отчёты. На моках G-2/G-4/G-5 «сделаны»,
+ * поэтому прямой заход по URL и обновление работают.
  */
 export function CarPage() {
   const { carId } = useParams<{ carId: string }>();
@@ -35,6 +36,7 @@ export function CarPage() {
       <div className="space-y-3">
         <Skeleton className="h-32 w-full rounded-card" />
         <Skeleton className="h-24 w-full rounded-card" />
+        <Skeleton className="h-24 w-full rounded-card" />
       </div>
     );
   }
@@ -43,72 +45,112 @@ export function CarPage() {
   }
 
   const car = carQuery.data;
-  const reports = reportsQuery.data ?? [];
 
   return (
     <div className="space-y-5">
-      <Card className="space-y-2">
-        <h1 className="text-title font-semibold">
-          {car.make} {car.model}, {car.year}
-        </h1>
-        <p className="font-mono text-sm text-muted-foreground">{car.vin}</p>
-        {car.avbyListingUrl && (
-          <a
-            href={car.avbyListingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm font-medium text-primary"
-          >
-            Объявление на av.by <ExternalLink className="size-4" aria-hidden />
-          </a>
-        )}
-      </Card>
+      <CarCard car={car} />
 
-      {reports.length === 0 ? (
-        <Card className="space-y-3 py-6 text-center">
-          <CarIcon className="mx-auto size-8 text-muted-foreground" aria-hidden />
-          <div>
-            <p className="font-semibold">Отчётов по этой машине пока нет</p>
-            <p className="mt-1 text-sm text-muted-foreground">Оставьте заявку — подборщик осмотрит авто.</p>
-          </div>
-          <Link to={`/cars/${carId}/request`}>
-            <Button block>Хочу отчёт</Button>
-          </Link>
+      {reportsQuery.isLoading ? (
+        <ReportListLoading />
+      ) : reportsQuery.isError ? (
+        <Card className="py-6 text-center text-body text-muted-foreground">
+          {apiErrorMessage(reportsQuery.error)}
         </Card>
+      ) : reportsQuery.data && reportsQuery.data.length === 0 ? (
+        <EmptyState carId={carId} waitingCount={car.waitingCount} />
       ) : (
-        <div className="space-y-3">
-          <h2 className="px-1 text-heading font-semibold">Отчёты · {reports.length}</h2>
-          {reports.map((report) => (
-            <Card key={report.id} className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="font-medium">{report.inspector.displayName}</p>
-                <p className="text-sm text-muted-foreground">
-                  {formatDate(report.publishedAt)}
-                  {report.inspector.companyName ? ` · ${report.inspector.companyName}` : ''}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <span className="font-semibold">{formatByn(report.priceByn)}</span>
-                {report.purchased ? (
-                  <Link to={`/purchases/${report.id}/report`}>
-                    <Button size="sm" variant="secondary">
-                      Открыть
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to={`/checkout/${report.id}`} state={{ car, report }}>
-                    <Button size="sm">Купить</Button>
-                  </Link>
-                )}
-              </div>
-            </Card>
-          ))}
-        </div>
+        <ReportList car={car} reports={reportsQuery.data ?? []} />
       )}
 
       <Link to="/sample" className="block text-center text-sm font-medium text-primary">
         Посмотреть пример отчёта
       </Link>
+    </div>
+  );
+}
+
+function CarCard({ car }: { car: CarDto }) {
+  return (
+    <Card className="space-y-2">
+      <h1 className="text-title font-semibold">
+        {car.make} {car.model}, {car.year}
+      </h1>
+      <p className="font-mono text-sm text-muted-foreground">{car.vin}</p>
+      {car.avbyListingUrl && (
+        <a
+          href={car.avbyListingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary"
+        >
+          Объявление на av.by <ExternalLink className="size-4" aria-hidden />
+        </a>
+      )}
+    </Card>
+  );
+}
+
+function ReportList({ car, reports }: { car: CarDto; reports: ReportPreviewDto[] }) {
+  return (
+    <div className="space-y-3">
+      <h2 className="px-1 text-heading font-semibold">Отчёты · {reports.length}</h2>
+      {reports.map((report) => (
+        <Card key={report.id} className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-medium">{report.inspector.displayName}</p>
+            <p className="text-sm text-muted-foreground">
+              {formatDate(report.publishedAt)}
+              {report.inspector.companyName ? ` · ${report.inspector.companyName}` : ''}
+            </p>
+            {report.summary.stopFactorsCount > 0 && (
+              <p className="text-sm font-medium text-bad">Остановочных факторов: {report.summary.stopFactorsCount}</p>
+            )}
+          </div>
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="font-semibold">{formatByn(report.priceByn)}</span>
+            {report.purchased ? (
+              // без purchaseId в тизере ведём в список покупок (id отчёта ≠ id покупки)
+              <Link to="/purchases">
+                <Button size="sm" variant="secondary">
+                  Открыть
+                </Button>
+              </Link>
+            ) : (
+              <Link to={`/checkout/${report.id}`} state={{ car, report }}>
+                <Button size="sm">Купить</Button>
+              </Link>
+            )}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function EmptyState({ carId, waitingCount }: { carId?: string; waitingCount?: number }) {
+  return (
+    <Card className="space-y-3 py-6 text-center">
+      <CarIcon className="mx-auto size-8 text-muted-foreground" aria-hidden />
+      <div>
+        <p className="font-semibold">Отчётов по этой машине пока нет</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Оставьте заявку — подборщик осмотрит авто.
+          {typeof waitingCount === 'number' && waitingCount > 0 && ` Сейчас его ждут ещё ${waitingCount} ${plural(waitingCount)}.`}
+        </p>
+      </div>
+      <Link to={`/cars/${carId}/request`}>
+        <Button block>Хочу отчёт</Button>
+      </Link>
+    </Card>
+  );
+}
+
+function ReportListLoading() {
+  return (
+    <div className="space-y-3">
+      <Loader2 className="size-5 animate-spin text-muted-foreground" aria-hidden />
+      <Skeleton className="h-24 w-full rounded-card" />
+      <Skeleton className="h-24 w-full rounded-card" />
     </div>
   );
 }
@@ -122,4 +164,12 @@ function ErrorNote({ text }: { text: string }) {
       </Link>
     </div>
   );
+}
+
+function plural(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return 'человек';
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'человека';
+  return 'человек';
 }
